@@ -19,6 +19,8 @@ from django.conf.urls.static import static
 from django.conf.urls import url
 from django.contrib import admin
 
+from wandsproducts.views import ProductListView, product_list_view, ProductDetailView, product_detail_view
+
 from .views import home_page, about_page, contact_page, login_page, registration_page
 
 urlpatterns = [
@@ -27,6 +29,10 @@ urlpatterns = [
     url(r'^contact/$', contact_page),
     url(r'^login/', login_page),
     url(r'^registration/', registration_page),
+    url(r'^wandsproducts/$', ProductListView.as_view()),
+    url(r'^wandsproducts-fbv/$', product_list_view),
+    url(r'^wandsproducts/(?P<pk>\d+)/$', ProductDetailView.as_view()),
+    url(r'^wandsproducts-fbv/(?P<pk>\d+)/$', product_detail_view),
     url(r'^admin/', admin.site.urls),
 ]
 
