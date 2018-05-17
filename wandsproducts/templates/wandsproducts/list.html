@@ -1,7 +1,7 @@
+{% extends "base.html" %}
 
-
-{% for obj in object_list %}
-
-{{ obj.title }} <br/>
-
-{% endfor %}
+{% block content %}
+    {% for obj in object_list %}
+        {% include 'wandsproducts/snippets/card.html' with item_instance=obj %} 
+    {% endfor %}
+{% endblock content %}
