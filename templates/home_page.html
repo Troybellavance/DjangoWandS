@@ -1,4 +1,39 @@
+{% extends "base.html" %}
+
 {% load static %}
+
+<title>Home</title>
+
+{% block base_head %}
+<link rel="stylesheet" href='{% static "css/main.css" %}'</>
+{% endblock base_head %}
+
+{% block content %}
+
+<div class='text-center'>
+    <h1>{{title}}</h1>
+    <h1>Welcome to the Walrus & Sons Emporium!</h1>
+</div>
+<div class='container'>
+<div class='row'>
+  <div class='col'>
+    <img src="{% static 'img/galaxy.jpg' %}" class='img-fluid' </>
+    <p>{{content}}</p>
+  </div>
+</div>
+{% if request.user.is_authenticated %}
+<div class='row'>
+  <div class='col'>
+  <h1>Premium Content</h1>
+  {{ premium_content }}
+  </div>
+  </div>
+{% endif %}
+</div>
+
+{% endblock content %}
+
+
 <!doctype html>
   <html lang="en">
     <head>
@@ -12,26 +47,7 @@
       <title>Walrus & Sons</title>
     </head>
     <body>
-      <div class='text-center'>
-          <h1>{{title}}</h1>
-          <h1>Welcome to the Walrus & Sons Emporium!</h1>
-      </div>
-      <div class='container'>
-      <div class='row'>
-        <div class='col'>
-          <img src="{% static 'img/galaxy.jpg' %}" class='img-fluid' </>
-          <p>{{content}}</p>
-        </div>
-      </div>
-      {% if request.user.is_authenticated %}
-      <div class='row'>
-        <div class='col'>
-        <h1>Premium Content</h1>
-        {{ premium_content }}
-        </div>
-        </div>
-      {% endif %}
-      </div>
+
       <!-- Optional JavaScript -->
       <!-- jQuery first, then Popper.js, then Bootstrap JS -->
       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
