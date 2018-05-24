@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='row  mb-4'>
+    {% if request.GET.q %}
+    <div class='col-12'>
+      Searched for:   <b>{{ request.GET.q }}</b>
+      <hr/>
+    </div>
+    {% else %}
+
+    <div class='col-12 col-md-6 mx-auto py-4'>
+      {% include 'search/snippets/search-form.html' %}
+    </div>
+    <div class='col-12'>
+      <hr>
+    </div>
+    {% endif %}
+</div>
+
+    <div class='row'>
+
+    {% for obj in object_list %}
+    <div class='col'>
+
+        {% if obj.featured == True %}
+          {% include 'wandsproducts/snippets/featuredcard.html' with item_instance=obj %}
+        {% else %}
+          {% include 'wandsproducts/snippets/card.html' with item_instance=obj %}
+        {% endif %}
+
+      <!--  {% if forloop.counter|divisibleby:3 %}
+      </div> </div><div class='row'><div class='col-12'><hr/></div>
+        {% else %}
+      </div>
+        {% endif %} -->
+
+    {% endfor %}
+</div>
+</div>
+{% endblock content %}
