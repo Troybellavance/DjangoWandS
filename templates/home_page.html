@@ -10,26 +10,25 @@
 
 {% block content %}
 
-<div class='text-center'>
-    <h1>{{title}}</h1>
+<div class='text-center' style="color: black">
     <h1>Welcome to the Walrus & Sons Emporium!</h1>
 </div>
-<div class='container'>
+
 <div class='row'>
   <div class='col'>
     <img src="{% static 'img/galaxy.jpg' %}" class='img-fluid' </>
-    <p>{{content}}</p>
+    <p style="color: black">{{content}}</p>
   </div>
 </div>
 {% if request.user.is_authenticated %}
 <div class='row'>
   <div class='col'>
-  <h1>Premium Content</h1>
+  <h1 style="color: black">Premium Content</h1>
   {{ premium_content }}
   </div>
   </div>
 {% endif %}
-</div>
+
 
 {% endblock content %}
 
