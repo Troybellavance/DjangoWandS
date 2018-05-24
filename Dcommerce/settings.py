@@ -40,6 +40,9 @@ INSTALLED_APPS = [
 
     #New apps
     'wandsproducts',
+    'search',
+    'tags',
+    'carts',
 ]
 
 MIDDLEWARE = [

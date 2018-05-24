@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic import TemplateView
 
 # from wandsproducts.views import (
 #              ProductListView,
@@ -32,12 +33,14 @@ from django.contrib import admin
 from .views import home_page, about_page, contact_page, login_page, registration_page
 
 urlpatterns = [
-    url(r'^$', home_page),
-    url(r'^about/$', about_page),
-    url(r'^contact/$', contact_page),
-    url(r'^login/$', login_page),
-    url(r'^registration/$', registration_page),
-    url(r'^wandsproducts/', include("wandsproducts.urls")),
+    url(r'^$', home_page, name='home'),
+    url(r'^about/$', about_page, name='about'),
+    url(r'^contact/$', contact_page, name='contact'),
+    url(r'^login/$', login_page, name='login'),
+    url(r'^registration/$', registration_page, name='registration'),
+    url(r'^bootstrap/$', TemplateView.as_view(template_name='bootstrap/example.html')),
+    url(r'^wandsproducts/', include("wandsproducts.urls", namespace='wandsproducts')),
+    url(r'^search/', include("search.urls", namespace='search')),
     # url(r'^featured/$', ProductFeaturedListView.as_view()),
     # url(r'^featured/(?P<pk>\d+)/$', ProductFeaturedDetailView.as_view()),
     # url(r'^wandsproducts/$', ProductListView.as_view()),
