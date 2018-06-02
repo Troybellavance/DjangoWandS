@@ -3,7 +3,7 @@
     <div class="card text-white bg-secondary  d-inline-block" style="max-width: 20rem;">
       <div class="card-header"> ~ </div>
       {% if item_instance.image %}
-        <img class="card-img-top" src="{{ item_instance.image.url }}" alt="Card image cap">
+        <img class="card-img-top" src="{{ item_instance.image.url }}" title="{{ item_instance.title }}">
         {% endif %}
 
       <div class="card-body">

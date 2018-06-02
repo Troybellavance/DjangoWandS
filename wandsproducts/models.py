@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.db.models.signals import pre_save, post_save
 from django.urls import reverse
 
-from .utilities import slug_generator
+from Dcommerce.utilities import slug_generator
 
 # Create your models here.
 
@@ -76,6 +76,10 @@ class Product(models.Model):
         return reverse("wandsproducts:detail", kwargs={"slug": self.slug})
 
     def __str__(self):
+        return self.title
+
+    @property
+    def name(self):
         return self.title
 
 def product_pre_save_receiver(sender, instance, *args, **kwargs):
