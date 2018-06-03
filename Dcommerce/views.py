@@ -2,8 +2,7 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .forms import ContactForm, LoginForm, RegistrationForm
-
+from .forms import ContactForm
 
 def home_page(request):
     #print(request.session.get("first_name", "Unknown")) #get
@@ -23,10 +22,6 @@ def about_page(request):
         "content":"A company spanning several generations!"
     }
     return render(request, "about/about_page.html", context)
-
-
-
-
 
 def contact_page(request):
     form_class = ContactForm(request.POST or None)

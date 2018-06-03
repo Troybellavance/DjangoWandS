@@ -20,8 +20,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from accounts.views import login_page, register_page
-from .views import home_page, about_page, contact_page, login_page, registration_page
+from accounts.views import login_page, registration_page
+from .views import home_page, about_page, contact_page
 
 urlpatterns = [
     url(r'^$', home_page, name='home'),
