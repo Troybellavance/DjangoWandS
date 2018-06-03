@@ -24,7 +24,7 @@ def login_page(request):
         else:
             # Return an 'invalid login' error message.
             print("User does not exist/User password incorrect.")
-    return render(request, "authentication/login.html", context)
+    return render(request, "accounts/login.html", context)
 
 User = get_user_model()
 def registration_page(request):
@@ -36,4 +36,4 @@ def registration_page(request):
         email = form_class.cleaned_data.get("email")
         password = form_class.cleaned_data.get("password")
         created_user = User.objects.create_user(username, email, password)
-    return render(request, "authentication/registration.html", context)
+    return render(request, "accounts/registration.html", context)
