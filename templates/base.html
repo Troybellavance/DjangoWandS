@@ -8,12 +8,12 @@
       <title>Base</title>
         {% include 'base/css.html' %}
         {% block base_head %} {% endblock base_head %}
-    </head>
-    <body style="background-color:#e0e0d1">
-      {% include 'base/navbar.html' with brand_name='Walrus & Sons' %}
-      <div class='container'>
-      {% block content %}{% endblock content %}
-    </div>
+      </head>
+      <body style="background-color:#c1c1b4">
+        {% include 'base/navbar.html' with brand_name='Walrus & Sons' %}
+        <div class='container'>
+        {% block content %}{% endblock content %}
+      </div>
 
         {% include 'base/js.html' %}
     </body>
