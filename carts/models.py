@@ -59,7 +59,8 @@ m2m_changed.connect(m2m_changed_cart_reciever, sender=Cart.products.through)
 
 def pre_save_cart_reciver(sender, instance, *args, **kwargs):
     if instance.subtotal > 0:
-        instance.total = instance.subtotal
-    else: instance.total = 0.00
+        instance.total = float(instance.subtotal) #* float(1.07) #7% tax
+    else:
+        instance.total = 0.00
 
 pre_save.connect(pre_save_cart_reciver, sender=Cart)
