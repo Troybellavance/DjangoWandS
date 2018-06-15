@@ -7,7 +7,6 @@ from carts.models import Cart
 
 from .models import Product
 
-# Create your views here.
 
 
 class ProductFeaturedListView(ListView):
@@ -24,13 +23,7 @@ class ProductFeaturedDetailView(DetailView):
 
 
 class ProductListView(ListView):
-    #queryset = Product.objects.all()
     template_name = "wandsproducts/list.html"
-
-#    def get_context_data(self, *args, **kwargs):
-#        context = super(ProductListView, self).get_context_data(*args, **kwargs)
-#        print(context)
-#        return context
     def get_queryset(self, *args, **kwargs):
         request = self.request
         return Product.objects.all()
@@ -57,7 +50,6 @@ class ProductDetailSlugView(DetailView):
     def get_object(self, *args, **kwargs):
         request = self.request
         slug = self.kwargs.get('slug')
-        #item_instance = get_object_or_404(Product, slug=slug, active=True)
         try:
             item_instance = Product.objects.get(slug=slug, active=True)
         except Product.DoesNotExist:
@@ -72,7 +64,6 @@ class ProductDetailSlugView(DetailView):
 
 
 class ProductDetailView(DetailView):
-    #queryset = Product.objects.all()
     template_name = "wandsproducts/detail.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -88,47 +79,11 @@ class ProductDetailView(DetailView):
             raise Http404("Product does not exist.")
         return item_instance
 
-    # def get_queryset(self, *args, **kwargs):
-    #     request = self.request
-    #     pk = self.kwargs.get('pk')
-    #     return Product.objects.filter(pk=pk)
-
-
-
-#class ProductDetailView(DetailView):
-#    template_name = 'wandsproducts/detail.html'
-#    queyset = Post.Objects.all()
-
-#    def get_object(self, *args, **kwargs):
-#        url_id = self.kwargs.get("id") #regex id
-#        return get_object_or_404(Post, id=url_id)
-#def product_detail_view(request, id, *args, **kwrgs):
-#    return render(request, template_name, {})
-
-
 
 def product_detail_view(request, pk=None, *args, **kwargs):
-    #item_instance = Product.objects.get(pk=pk, featured=True) #product id
-    #item_instance = get_object_or_404(Product, pk=pk, featured=True)
-    # try:
-    #     item_instance = Product.objects.get(id=pk)
-    # except Product.DoesNotExist:
-    #     print('Product does not exist.')
-    #     raise Http404("Product does not exist.")
-    # except:
-    #     print('Unknown error.')
-
     item_instance = Product.objects.get_by_id(pk)
     if item_instance is None:
         raise Http404("Product does not exist.")
-
-    # qs = Product.objects.filter(id=pk)
-    #
-    # if qs.exists() and qs.count() == 1:
-    #     item_instance = qs.first()
-    # else:
-    #     raise Http404("Product does not exist.")
-
     context = {
         'object_list': item_instance
     }
