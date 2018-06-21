@@ -5,6 +5,7 @@ from billing.models import BillingProfile
 from .models import Address
 from .forms import AddressForm
 
+
 def checkout_address_create_view(request):
     form_class = AddressForm(request.POST or None)
     context = {"form": form_class}
