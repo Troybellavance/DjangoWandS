@@ -16,5 +16,20 @@
       </div>
 
         {% include 'base/js.html' %}
+          <script>
+            $(document).ready(function(){
+              var productForm = $(".product-form-ajax") //form-product-ajax
+              productForm.submit(function(event){
+                event.preventDefault();
+                console.log("form not sending")
+                var thisForm = $(this)
+                var actionEndpoint;
+                var httpMethod;
+                var formData;
+
+                console.log(thisForm.attr("action"), thisForm.attr("method"))
+              })
+            })
+          </script>
     </body>
   </html>
