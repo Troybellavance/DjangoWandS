@@ -44,7 +44,7 @@
                       var currentPath = window.location.href
 
                       if (currentPath.indexOf("cart") != -1){
-                        updateCart()
+                        refreshCart()
                       }
                     },
                     error: function(errorData){
@@ -58,7 +58,9 @@
                   console.log("in current cart")
                   var cartTable = $(".cart-table")
                   var cartBody = cartTable.find(".cart-body")
-                  cartBody.html("<h3>Cart Changed</h3>")
+                  //cartBody.html("<h3>Cart Changed</h3>")
+                  var productRows = cartBody.find(".cart-product")
+                  var currentUrl = window.location.href
 
                   var refreshCartUrl = '/api/cart/';
                   var refreshCartMethod = "GET";
@@ -69,6 +71,19 @@
                     data: data,
                     success: function(data){
                       console.log("success")
+                      console.log(data)
+                      if (data.products.length > 0){
+                        productRows.html(" ")
+                        i = data.products.length
+                        $.each(data.products, function(index, value){
+                          cartBody.prepend("<tr><th scope=\"row\">" + i + "</th><td><a href='" + value.url + "'>" + value.name + "</td><td>" + value.price + "</td></tr>")
+                          i --
+                        })
+                        cartBody.find(".cart-subtotal").text(data.subtotal)
+                        cartBody.find(".cart-total").text(data.total)
+                      } else {
+                        window.location.href = currentUrl
+                      }
                     },
                     error: function(errorData){
                       console.log("error")
