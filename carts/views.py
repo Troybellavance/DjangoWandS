@@ -11,6 +11,20 @@ from wandsproducts.models import Product
 from orders.models import Order
 from .models import Cart
 
+def cart_detail_view_api(request):
+    cart_obj, new_obj = Cart.objects.new_or_get(request)
+    products = [{
+             "id": x.id,
+             "url": x.get_absolute_url(),
+             "name": x.name,
+             "price": x.price
+             }
+
+             for x in cart_obj.products.all()]
+
+    cart_data = {"products": products,"subtotal": cart_obj.subtotal, "total": cart_obj.total}  #Need strings, ints, etc
+    return JsonResponse(cart_data)
+
 def cart_home(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
     return render(request, "carts/home.html", {"cart": cart_obj})
