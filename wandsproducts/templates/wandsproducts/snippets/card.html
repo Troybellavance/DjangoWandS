@@ -10,6 +10,7 @@
         <h5 class="card-title">{{ item_instance.title }}</h5>
         <p class="card-text">{{ item_instance.description|linebreaks|truncatewords:18 }}</p>
         <a href="{{ item_instance.get_absolute_url }}" class="btn btn-primary" style="background-color:#19194d">View</a>
+           {% include 'wandsproducts/snippets/update-cart.html' with product=item_instance cart=cart %}
         <!--<a href="{% url 'wandsproducts:detail' slug=item_instance.slug %}" class="btn btn-primary">URL shortcut</a>-->
     </div>
   </div>
