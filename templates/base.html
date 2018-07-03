@@ -70,13 +70,18 @@
                     method: refreshCartMethod,
                     data: data,
                     success: function(data){
-                      console.log("success")
-                      console.log(data)
+
+                      var hiddenCartItemRemovalForm =  $(".cart-item-removal-form")
                       if (data.products.length > 0){
                         productRows.html(" ")
                         i = data.products.length
                         $.each(data.products, function(index, value){
-                          cartBody.prepend("<tr><th scope=\"row\">" + i + "</th><td><a href='" + value.url + "'>" + value.name + "</td><td>" + value.price + "</td></tr>")
+                          var newCartItemRemoval = hiddenCartItemRemovalForm.clone()
+                          newCartItemRemoval.css("display", "block")
+                          //newCartItemRemoval.removeClass("hidden-class")
+                          newCartItemRemoval.find(".cart-product-id").val(value.id)
+                            cartBody.prepend("<tr><th scope=\"row\">" + i + "</th><td><a href='" + value.url + "'>" + value
+                            .name + "</a>" + newCartItemRemoval.html() + "</td><td>" + value.price + "</td></tr>")
                           i --
                         })
                         cartBody.find(".cart-subtotal").text(data.subtotal)
