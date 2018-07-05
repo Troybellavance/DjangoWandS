@@ -18,6 +18,61 @@
         {% include 'base/js.html' %}
           <script>
             $(document).ready(function(){
+              // Contact form handling
+
+              var contactForm = $(".contact-form")
+              var contactFormMethod = contactForm.attr("method")
+              var contactFormEndpoint = contactForm.attr("action")
+              var contactFormButton = searchForm.find("[type='submit']")
+              var contactFormButtonText = contactFormButton.text
+
+              function displaySubmission(doSubmitting){
+
+                if (doSubmitting){
+                  contactFormButton.addClass("disabled")
+                  contactFormButton.html("<i class='fa fa-spin fa-spinner'></i> Sending...")
+                } else {
+                  contactFormButton.removeClass("disabled")
+                  contactFormButton.html(contactFormButtonText)
+                }
+
+              }
+
+              contactForm.submit(function(event){
+                event.preventDefault()
+                var contactFormData = contactForm.serialize()
+                var thisForm = $(this)
+                displaySubmission(true)
+                $.ajax({
+                  method: contactFormMethod,
+                  url: contactFormEndpoint,
+                  data: contactFormData,
+                  success: function(data){
+                    contactForm[0].reset()
+                    $.alert({
+                      title: "Success!",
+                      content: data.message,
+                      theme: "dark",
+                    })
+                  },
+                  error: function(error){
+                    console.log(error.responseJSON)
+                    var jsonData = error.responseJSON
+                    var msg = ""
+
+                    $.each(jsonData, function(key, value){
+                      msg += key + ": " + value[0].message + "<br/>"
+                    })
+                    $.alert({
+                      title: "Oops!",
+                      content: msg,
+                      theme: "dark",
+                    })
+                  }
+                })
+              })
+
+
               //auto-search
 
                var searchForm = $(".search-form")
