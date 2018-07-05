@@ -46,14 +46,15 @@ def cart_update(request):
             cart_obj.products.add(product_obj)
             product_added = True
         request.session['cart_items'] = cart_obj.products.count()
-        if request.is_ajax():
+        if request.is_ajax():   #Async with ajax for JS, XML, JSON
             print("Ajax request")
             json_data = {
                 "added": product_added,
                 "removed": not product_added,
                 "cartItemCount": cart_obj.products.count()
             }
-            return JsonResponse(json_data)
+            return JsonResponse(json_data, status=200)
+            #return JsonResponse({"message": "Error 400"}, status_code=400)  #Alternate REST
     return redirect("cart:home")
 
 def checkout_home(request):
