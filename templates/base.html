@@ -81,8 +81,12 @@
                       }
                     },
                     error: function(errorData){
-                      console.log("error")
-                      console.log(errorData)
+                      $.alert({
+                        title: "Oops!",
+                        content: "An unexpected error has occurred.",
+                        theme: "dark",
+                      })
+
                     }
                   })
                 })
@@ -124,8 +128,11 @@
                       }
                     },
                     error: function(errorData){
-                      console.log("error")
-                      console.log(errorData)
+                      $.alert({
+                        title: "Oops!",
+                        content: "An unexpected error has occurred.",
+                        theme: "dark",
+                      })
                     }
                   })
                 }
