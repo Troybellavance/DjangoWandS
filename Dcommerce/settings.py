@@ -41,11 +41,13 @@ INSTALLED_APPS = [
 
     #New apps
     'accounts',
-    'wandsproducts',
-    'search',
-    'tags',
+    'addresses',
+    'billing',
     'carts',
     'orders',
+    'search',
+    'tags',
+    'wandsproducts',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+LOGOUT_REDIRECT_URL = '/login/'
 ROOT_URLCONF = 'Dcommerce.urls'
 
 TEMPLATES = [
