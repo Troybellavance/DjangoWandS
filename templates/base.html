@@ -23,26 +23,28 @@
               var contactForm = $(".contact-form")
               var contactFormMethod = contactForm.attr("method")
               var contactFormEndpoint = contactForm.attr("action")
-              var contactFormButton = searchForm.find("[type='submit']")
-              var contactFormButtonText = contactFormButton.text
 
-              function displaySubmission(doSubmitting){
+
+              function displaySubmission(submitButton, defaultText, doSubmitting){
 
                 if (doSubmitting){
-                  contactFormButton.addClass("disabled")
-                  contactFormButton.html("<i class='fa fa-spin fa-spinner'></i> Sending...")
+                  submitButton.addClass("disabled")
+                  submitButton.html("<i class='fa fa-spin fa-spinner'></i> Sending...")
                 } else {
-                  contactFormButton.removeClass("disabled")
-                  contactFormButton.html(contactFormButtonText)
+                  submitButton.removeClass("disabled")
+                  submitButton.html(defaultText)
                 }
 
               }
 
               contactForm.submit(function(event){
                 event.preventDefault()
+
+                var contactFormButton = contactForm.find("[type='submit']")
+                var contactFormButtonText = contactFormButton.text()
                 var contactFormData = contactForm.serialize()
                 var thisForm = $(this)
-                displaySubmission(true)
+                displaySubmission(contactFormButton, "", true)
                 $.ajax({
                   method: contactFormMethod,
                   url: contactFormEndpoint,
@@ -54,6 +56,9 @@
                       content: data.message,
                       theme: "dark",
                     })
+                    setTimeout(function(){
+                      displaySubmission(contactFormButton, contactFormButtonText, false)
+                    }, 750)
                   },
                   error: function(error){
                     console.log(error.responseJSON)
@@ -68,6 +73,10 @@
                       content: msg,
                       theme: "dark",
                     })
+
+                    setTimeout(function(){
+                      displaySubmission(contactFormButton, contactFormButtonText, false)
+                    }, 750)
                   }
                 })
               })
