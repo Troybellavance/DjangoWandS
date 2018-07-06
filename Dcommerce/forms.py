@@ -18,9 +18,3 @@ class ContactForm(forms.Form):
              widget=forms.Textarea(
                      attrs={"class": "form-control",
                             "placeholder": "Any comments for us?"}))
-
-    def clean_email(self):
-         email = self.cleaned_data.get("email")
-         if not "gmail.com" in email:
-             raise forms.ValidationError("Email must be gmail.com")
-         return email
