@@ -1,6 +1,83 @@
 from django.db import models
+from django.contrib.auth.models import (
+     AbstractBaseUser, BaseUserManager
+)
 
 
+
+class UserManager(BaseUserManager):
+
+    def create_user(self, email, password=None, is_active=True, is_staff=False, is_admin=False):
+        if not email:
+            raise ValueError("Users require an email.")
+        if not password:
+            raise ValueError("Users require a password.")
+        user_obj = self.model(
+            email = self.normalize_email(email)
+        )
+        user_obj.set_password(password)
+        user_obj.staff = is_staff
+        user_obj.admin = is_admin
+        user_obj.active = is_active
+        user_obj.save(using=self._db)
+        return user_obj
+
+    def create_staff(self, email, password=None):
+        user = self.create_user(
+               email,
+               password=password,
+               is_staff=True)
+        return user
+
+    def ceate_admin(self, email, password=None):
+        user = self.create_user(
+                email,
+                password=password,
+                is_staff=True,
+                is_admin=True
+        )
+        return user
+
+
+class CustomUser(AbstractBaseUser):
+    #username    = models.CharField(max_length=35)
+    #first_name   = models.Charfield(max_length=75, blank=True, null=True)
+    #last_name   = models.Charfield(max_length=75, blank=True, null=True)
+    email       = models.EmailField(max_length=75, default='tuskysclub@tuskysclub.com', unique=True)
+    staff       = models.BooleanField(default=False)
+    admin       = models.BooleanField(default=False)
+    active      = models.BooleanField(default=True)
+    timestamp   = models.DateTimeField(auto_now_add=True)
+
+    USERNAME_FIELD = 'email'
+
+    REQUIED_FIELDS = []
+
+    objects = UserManager()
+
+    def __str__(self):
+        return self.email
+
+    def get_full_name(self):
+        return self.email
+
+    def get_short_name(self):
+        return self.email
+
+    @property
+    def is_staff(self):
+        return self.staff
+
+    @property
+    def is_admin(self):
+        return self.admin
+
+    @property
+    def is_active(self):
+        return self.active
+
+# class Profile(models.Model):
+#     username = models.OneToOneField(CustomUser) #Going to move this to own app/enhance registration for email confirmation.
 
 
 class GuestEmail(models.Model):
