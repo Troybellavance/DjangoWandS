@@ -26,10 +26,11 @@ class UserManager(BaseUserManager):
         user = self.create_user(
                email,
                password=password,
-               is_staff=True)
+               is_staff=True
+        )
         return user
 
-    def ceate_admin(self, email, password=None):
+    def create_superuser(self, email, password=None):
         user = self.create_user(
                 email,
                 password=password,
@@ -63,6 +64,12 @@ class CustomUser(AbstractBaseUser):
 
     def get_short_name(self):
         return self.email
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
 
     @property
     def is_staff(self):
