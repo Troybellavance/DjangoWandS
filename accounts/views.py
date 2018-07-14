@@ -55,9 +55,10 @@ def registration_page(request):
     form_class = RegistrationForm(request.POST or None)
     context = {"form": form_class}
     if form_class.is_valid():
-        print(form_class.cleaned_data)
-        username = form_class.cleaned_data.get("username")
-        email = form_class.cleaned_data.get("email")
-        password = form_class.cleaned_data.get("password")
-        created_user = User.objects.create_user(username, email, password)
+        form.save()
+        # print(form_class.cleaned_data)
+        # username = form_class.cleaned_data.get("username")
+        # email = form_class.cleaned_data.get("email")
+        # password = form_class.cleaned_data.get("password")
+        # created_user = User.objects.create_user(username, email, password)
     return render(request, "accounts/registration.html", context)
