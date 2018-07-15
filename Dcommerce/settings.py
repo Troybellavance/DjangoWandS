@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #New apps
+    #Non-default, non-thirdparty apps.
     'accounts',
     'addresses',
     'billing',
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'tags',
     'wandsproducts',
 ]
+
+AUTH_USER_MODEL = 'accounts.CustomUser' #Swap from built-in model to custom model for the user.
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
