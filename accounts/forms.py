@@ -9,7 +9,7 @@ class GuestForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.EmailField(label='E-mail')
+    email = forms.EmailField(label='E-mail')
     password = forms.CharField(widget=forms.PasswordInput)
 
 class RegistrationForm(forms.ModelForm):
@@ -30,7 +30,7 @@ class RegistrationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(UserAdminCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        user.active = False
+        # user.active = False
         if commit:
             user.save()
         return user
