@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #Non-default, non-thirdparty apps.
     'accounts',
     'addresses',
+    'analytics',
     'billing',
     'carts',
     'orders',
@@ -51,6 +52,8 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser' #Swap from built-in model to custom model for the user.
+
+FORCE_INACTIVE_USER_ENDSESSION= False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
