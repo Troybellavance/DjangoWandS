@@ -1,0 +1,72 @@
+[
+{
+    "model": "wandsproducts.product",
+    "pk": 1,
+    "fields": {
+        "title": "Wallet Salmon",
+        "slug": "wallet-salmon",
+        "description": "The finest salmon lovingly wrapped in a leather money pouch.",
+        "price": "29.99",
+        "image": "products/229647/229647.jpg",
+        "featured": true,
+        "active": true,
+        "timestamp": "2018-05-18T23:58:35.395Z"
+    }
+},
+{
+    "model": "wandsproducts.product",
+    "pk": 2,
+    "fields": {
+        "title": "Clam Cluster",
+        "slug": "clam-cluster",
+        "description": "A fine collection of mature clams suitable for a gift or dinner.",
+        "price": "14.99",
+        "image": "products/245233/245233.jpg",
+        "featured": false,
+        "active": true,
+        "timestamp": "2018-05-18T23:58:35.395Z"
+    }
+},
+{
+    "model": "wandsproducts.product",
+    "pk": 3,
+    "fields": {
+        "title": "Classical Walrus Art",
+        "slug": "tuskyvonwalrusart01",
+        "description": "A bold, thick-lined style by Tusky Von Walrus the Third during the late Renaissance period.",
+        "price": "34599.99",
+        "image": "products/90123/90123.jpg",
+        "featured": true,
+        "active": true,
+        "timestamp": "2018-05-18T23:58:35.395Z"
+    }
+},
+{
+    "model": "wandsproducts.product",
+    "pk": 5,
+    "fields": {
+        "title": "Lorem Walrusen",
+        "slug": "lorem-walrusen",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed viverra nisl in nulla accumsan, at posuere metus aliquet. Morbi sit amet cursus leo. Duis venenatis nunc lorem, id maximus nunc pretium ac. Etiam auctor efficitur felis, quis pellentesque mauris fermentum et. Cras justo nibh, feugiat vel leo et, consectetur venenatis felis. Nam nec consectetur sapien. Integer dignissim diam sollicitudin vehicula lacinia. Curabitur porta tortor id luctus accumsan. Quisque et risus fringilla, ultrices augue quis, luctus lorem. Suspendisse lacinia lobortis ipsum a bibendum.\r\n\r\nIn luctus turpis varius, bibendum justo quis, rhoncus urna. Ut molestie orci sed sollicitudin posuere. Nam lorem felis, congue sit amet turpis sed, pharetra elementum quam. Maecenas posuere purus non neque sollicitudin auctor. Phasellus vehicula scelerisque eros, a tempus dolor semper vitae. Fusce lacinia, velit sed fermentum vulputate, purus elit blandit arcu, quis hendrerit nisi nunc id purus. Maecenas mattis, urna ac fermentum venenatis, dui ante faucibus purus, et ultricies nibh lacus et libero.\r\n\r\nSed eleifend porttitor nisi et condimentum. Duis vel porttitor nulla, eget vulputate lorem. Integer ac ultrices sem, non scelerisque dui. Aenean non lectus ac mi ornare sagittis. Vivamus id eros eget nunc finibus porttitor. Aenean in imperdiet sem. Aliquam lacus urna, varius vel purus eget, gravida pulvinar mi. Nam egestas nunc nec auctor volutpat. Pellentesque pretium ultrices convallis.\r\n\r\nUt fringilla pretium nulla, ac euismod libero vehicula eget. Phasellus hendrerit iaculis lacus, in convallis felis aliquet nec. Duis interdum nisi id diam sodales mattis. Maecenas porta gravida quam id volutpat. In maximus enim eget justo euismod, nec ultrices mauris aliquet. Nullam eu aliquet sapien, vitae congue nisl. Vestibulum eget diam lorem. Nam sagittis risus vel ultricies efficitur. Sed semper lacinia velit, eu aliquam risus varius in. Phasellus congue, nisi in gravida tincidunt, dolor mauris ullamcorper magna, non mattis tortor enim ac arcu. Mauris ultricies semper imperdiet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;\r\n\r\nCras tellus nisl, ultrices vitae dolor a, finibus maximus neque. Sed congue mi sit amet erat ultrices dapibus. Mauris nec ipsum sed odio facilisis commodo. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin ut est laoreet tellus consectetur imperdiet. Praesent condimentum, tortor consectetur tincidunt elementum, massa nunc hendrerit lorem, sed lobortis erat nisl at magna. Cras pretium velit quis varius lobortis. In eleifend aliquet augue, sed mattis massa eleifend sit amet. Donec odio metus, tincidunt a condimentum quis, efficitur sed justo. Etiam auctor nec nulla vitae dapibus. Quisque tincidunt risus eros, quis fermentum sapien cursus non. Duis pretium sed mauris ut luctus. Curabitur sem justo, congue sollicitudin rhoncus dapibus, auctor id tellus. Etiam egestas pellentesque mauris et scelerisque.",
+        "price": "9.99",
+        "image": "products/57171/57171.jpg",
+        "featured": false,
+        "active": true,
+        "timestamp": "2018-05-18T23:58:35.395Z"
+    }
+},
+{
+    "model": "wandsproducts.product",
+    "pk": 6,
+    "fields": {
+        "title": "Salmon Bouquet",
+        "slug": "salmon-bouquet",
+        "description": "A collection of fresh salmon lovingly arranged and express shipped to your home.",
+        "price": "99.99",
+        "image": "products/40280/40280.jpg",
+        "featured": false,
+        "active": true,
+        "timestamp": "2018-05-24T07:14:55.005Z"
+    }
+}
+]
