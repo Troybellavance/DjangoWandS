@@ -80,4 +80,4 @@ def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
         qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
         qs.update(default=False)
 
-post_save.connect(new_card_post_save_receiver, sender=Card)
+post_save.connect(new_card_post_save_receiver, sender=CreditCard)
