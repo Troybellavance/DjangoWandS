@@ -1,21 +1,22 @@
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from accounts.models import GuestEmail
 
 User = settings.AUTH_USER_MODEL
 
+import stripe
+stripe.api_key = ""
+
+#Checks for user/guest status and saves payment information or reloads it for the guest user
 class BillingProfileManager(models.Manager):
     def new_or_get(self, request):
         user = request.user
         guest_email_id = request.session.get('guest_email_id')
         created = False
         obj = None
-        #logged in user checkout & remembers payment 'stuff'
         if user.is_authenticated():
             obj, created = self.model.objects.get_or_create(user=user, email=user.email)
-
-        #guest user checkout & automatically reloads payment 'stuff'
         elif guest_email_id is not None:
             guest_email_obj = GuestEmail.objects.get(id=guest_email_id)
             obj, created = self.model.objects.get_or_create(email=guest_email_obj.email)
@@ -23,19 +24,31 @@ class BillingProfileManager(models.Manager):
             pass
         return obj, created
 
+
 class BillingProfile(models.Model):
     user        = models.OneToOneField(User, null=True, blank=True)
     email       = models.EmailField()
     active      = models.BooleanField(default=True)
     update      = models.DateTimeField(auto_now=True)
     timestamp   = models.DateTimeField(auto_now_add=True)
+    customer_id = models.CharField(max_length=100, null=True, blank=True)
 
     objects = BillingProfileManager()
 
     def __str__(self):
         return self.email
 
+#Makes sure the customer doesn't have an ID already and that they have an email. No email means no stripe customer_id. Can generate new ids easily with pre_save.
+def billing_profile_created_receiver(sender, instance, *args, **kwargs):
+    if not instance.customer_id and instance.email:
+        customer = stripe.Customer.create(
+                email = instance.email,
+        )
+        print(customer)
+        instance.customer_id = customer.id
 
+
+pre_save.connect(billing_profile_created_receiver, sender=BillingProfile)
 
 
 def user_created_receiver(sender, instance, created, *args, **kwargs):
@@ -44,11 +57,27 @@ def user_created_receiver(sender, instance, created, *args, **kwargs):
 
 post_save.connect(user_created_receiver, sender=User)
 
-#Can use as plain Profile
 
-#Could have customer_id in stripe, paypal, braintree, etc as the BillingProfile
-# def billing_profile_created_receiver(sender, instasnce, created, *args, **kwargs):
-#     if created:
-#         print("Send to payment service (stripe/braintree/etc).")
-#         instance.customer_id = newID
-#         instance.save()
+class CreditCard(models.Model):
+    billing_profile         = models.ForeignKey(BillingProfile)
+    stripe_id               = models.CharField(max_length=120)
+    brand                   = models.CharField(max_length=120, null=True, blank=True)
+    country                 = models.CharField(max_length=30, null=True, blank=True)
+    exp_month               = models.IntegerField(null=True, blank=True)
+    exp_year                = models.IntegerField(null=True, blank=True)
+    last4                   = models.CharField(max_length=4, null=True, blank=True)
+    default                 = models.BooleanField(default=True)
+    active                  = models.BooleanField(default=True)
+    timestamp               = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return "{} {}".format(self.brand, self.last4)
+
+def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
+    if instance.default:
+        billing_profile = instance.billing_profile
+        qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
+        qs.update(default=False)
+
+post_save.connect(new_card_post_save_receiver, sender=Card)
