@@ -6,7 +6,7 @@ from accounts.models import GuestEmail
 User = settings.AUTH_USER_MODEL
 
 import stripe
-stripe.api_key = ""
+stripe.api_key = "sk_test_lhe3uvwYErAh2ECdCfg6YD3C"
 
 #Checks for user/guest status and saves payment information or reloads it for the guest user
 class BillingProfileManager(models.Manager):

@@ -5,40 +5,15 @@
 
 <!-- Stripe CreditCard Form -->
 
-<script src="https://js.stripe.com/v3/"></script>
-<style>
 
-.StripeElement {
-  background-color: white;
-  height: 40px;
-  padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  box-shadow: 0 1px 3px 0 #e6ebf1;
-  -webkit-transition: box-shadow 150ms ease;
-  transition: box-shadow 150ms ease;
-}
-
-.StripeElement--focus {
-  box-shadow: 0 1px 3px 0 #cfd7df;
-}
-
-.StripeElement--invalid {
-  border-color: #fa755a;
-}
-
-.StripeElement--webkit-autofill {
-  background-color: #fefde5 !important;
-}
-
-</style>
-
-<form action="/charge" method="post" id="payment-form">
+<div class='col-8 col-md-6 mx-auto'>
+  <h2>Payment Method</h2>
+<form action="/charge" method="post" id="payment-form" data-token='{{ publish_key }}'>
   <div class="form-row">
     <label for="card-element">
       Credit or debit card
     </label>
-    <div id="card-element">
+    <div id="card-element" class='form-control'>
       <!-- A Stripe Element will be inserted here. -->
     </div>
 
@@ -46,13 +21,17 @@
     <div id="card-errors" role="alert"></div>
   </div>
 
-  <button>Submit Payment</button>
+  <button class='btn btn-primary my-2'>Submit Payment</button>
 </form>
+</div>
 
+{% endblock %}
+
+{% block javascript %}
 <script>
 
 // Create a Stripe client.
-var stripe = Stripe('pk_test_8ahgD8d6PwQKRMuLU5Kh6VfI');
+var stripe = Stripe('pk_test_E06fqQ0w0Yh0gNtiUmRjPg9o');
 
 // Create an instance of Elements.
 var elements = stripe.elements();
@@ -109,5 +88,8 @@ form.addEventListener('submit', function(event) {
   });
 });
 
+function stripeTokenHandler(token){
+  console.log(token)
+}
 </script>
 {% endblock %}
