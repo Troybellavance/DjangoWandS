@@ -8,7 +8,7 @@
 
 <div class='col-8 col-md-6 mx-auto'>
   <h2>Payment Method</h2>
-<form action="/charge" method="post" id="payment-form" data-token='{{ publish_key }}'>
+<form class="payment-form" action="/charge" method="post" id="payment-form" data-token='{{ publish_key }}' data-next-url='/billing'>
   <div class="form-row">
     <label for="card-element">
       Credit or debit card
@@ -30,8 +30,19 @@
 {% block javascript %}
 <script>
 
+
+var paymentForm = $(".payment-form")
+
+if (paymentForm.length > 1){
+    alert("One payment form only per page.")
+    paymentForm.css('display', 'none')
+}
+else if (paymentForm.length == 1){
+
+var publicKey = paymentForm.attr('data-token')
+
 // Create a Stripe client.
-var stripe = Stripe('pk_test_E06fqQ0w0Yh0gNtiUmRjPg9o');
+var stripe = Stripe(publicKey);
 
 // Create an instance of Elements.
 var elements = stripe.elements();
@@ -89,7 +100,12 @@ form.addEventListener('submit', function(event) {
 });
 
 function stripeTokenHandler(token){
-  console.log(token)
+    console.log(token.id)
+    var paymentMethodEndpoint = 'billing/payment-method/create/'
+    var data = {
+      'token':token.id
+    }
+}
 }
 </script>
 {% endblock %}
