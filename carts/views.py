@@ -19,11 +19,10 @@ def cart_detail_view_api(request):
              "name": x.name,
              "price": x.price
              }
-
              for x in cart_obj.products.all()]
-
     cart_data = {"products": products,"subtotal": cart_obj.subtotal, "total": cart_obj.total}  #Need strings, ints, etc
     return JsonResponse(cart_data)
+
 
 def cart_home(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
@@ -57,20 +56,18 @@ def cart_update(request):
             #return JsonResponse({"message": "Error 400"}, status_code=400)  #Alternate REST
     return redirect("cart:home")
 
+
 def checkout_home(request):
     cart_obj, cart_created = Cart.objects.new_or_get(request)
     order_obj = None
     if cart_created or cart_obj.products.count() == 0:
         return redirect("cart:home")
-
     login_form = LoginForm()
     guest_form = GuestForm()
     address_form = AddressForm()
     address_qs = None
-
     billing_address_id = request.session.get("billing_address_id", None)
     shipping_address_id = request.session.get("shipping_address_id", None)
-
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     if billing_profile is not None:
         if request.user.is_authenticated():
@@ -101,6 +98,7 @@ def checkout_home(request):
         "address_qs": address_qs,
     }
     return render(request, "carts/checkout.html", context)
+
 
 def checkout_complete_view(request):
     return render(request, "carts/checkout-complete.html", {})

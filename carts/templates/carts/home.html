@@ -16,17 +16,17 @@
     </tr>
   </thead>
   <tbody class='cart-body'>
+
     {% for product in cart.products.all %}
     <tr class='cart-product'>
       <th scope="row">{{ forloop.counter }}</th>
       <td><a href='{{ product.get_absolute_url }}'>{{ product.title }}</a>
-
         {% include 'carts/snippets/product-removal.html' with product_id=product.id %}
-
       </td>
       <td>{{ product.price }}</td>
     </tr>
     {% endfor %}
+
     <tr>
       <td colspan="2"></td>
       <td><b>Subtotal</b> $<span class='cart-subtotal'>{{ cart.subtotal }}</span></td>
@@ -41,7 +41,6 @@
     </tr>
   </tbody>
 </table>
-
 <div class="cart-item-removal-form" style='display:none'>
    {% include 'carts/snippets/product-removal.html' %}
 </div>

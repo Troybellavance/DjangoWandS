@@ -30,6 +30,7 @@ class CartManager(models.Manager):
                 user_obj = user
         return self.model.objects.create(user=user_obj)
 
+
 class Cart(models.Model):
     user       = models.ForeignKey(User, null=True, blank=True)
     products   = models.ManyToManyField(Product, blank=True)
@@ -56,6 +57,7 @@ def m2m_changed_cart_reciever(sender, instance, action, *args, **kwargs):
             instance.save()
 
 m2m_changed.connect(m2m_changed_cart_reciever, sender=Cart.products.through)
+
 
 def pre_save_cart_reciver(sender, instance, *args, **kwargs):
     if instance.subtotal > 0:
