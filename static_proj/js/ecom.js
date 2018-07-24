@@ -20,7 +20,7 @@ $(document).ready(function(){
 
   contactForm.submit(function(event){
     event.preventDefault()
-
+    
     var contactFormButton = contactForm.find("[type='submit']")
     var contactFormButtonText = contactFormButton.text()
     var contactFormData = contactForm.serialize()
