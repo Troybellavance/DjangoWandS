@@ -58,26 +58,26 @@ def user_created_receiver(sender, instance, created, *args, **kwargs):
 post_save.connect(user_created_receiver, sender=User)
 
 
-class CreditCard(models.Model):
-    billing_profile         = models.ForeignKey(BillingProfile)
-    stripe_id               = models.CharField(max_length=120)
-    brand                   = models.CharField(max_length=120, null=True, blank=True)
-    country                 = models.CharField(max_length=30, null=True, blank=True)
-    exp_month               = models.IntegerField(null=True, blank=True)
-    exp_year                = models.IntegerField(null=True, blank=True)
-    last4                   = models.CharField(max_length=4, null=True, blank=True)
-    default                 = models.BooleanField(default=True)
-    active                  = models.BooleanField(default=True)
-    timestamp               = models.DateTimeField(auto_now_add=True)
-
-
-    def __str__(self):
-        return "{} {}".format(self.brand, self.last4)
-
-def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
-    if instance.default:
-        billing_profile = instance.billing_profile
-        qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
-        qs.update(default=False)
-
-post_save.connect(new_card_post_save_receiver, sender=CreditCard)
+# class CreditCard(models.Model):
+#     billing_profile         = models.ForeignKey(BillingProfile)
+#     stripe_id               = models.CharField(max_length=120)
+#     brand                   = models.CharField(max_length=120, null=True, blank=True)
+#     country                 = models.CharField(max_length=30, null=True, blank=True)
+#     exp_month               = models.IntegerField(null=True, blank=True)
+#     exp_year                = models.IntegerField(null=True, blank=True)
+#     last4                   = models.CharField(max_length=4, null=True, blank=True)
+#     default                 = models.BooleanField(default=True)
+#     active                  = models.BooleanField(default=True)
+#     timestamp               = models.DateTimeField(auto_now_add=True)
+#
+#
+#     def __str__(self):
+#         return "{} {}".format(self.brand, self.last4)
+#
+# def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
+#     if instance.default:
+#         billing_profile = instance.billing_profile
+#         qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
+#         qs.update(default=False)
+#
+# post_save.connect(new_card_post_save_receiver, sender=CreditCard)

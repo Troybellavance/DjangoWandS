@@ -9,6 +9,7 @@ STRIPE_PUBLIC_KEY = 'pk_test_E06fqQ0w0Yh0gNtiUmRjPg9o'
 
 from .models import BillingProfile
 
+
 def payment_method_view(request):
     # if request.user.is_authenticated():
     #     billing_profile = request.user.billingprofile
@@ -28,5 +29,10 @@ def payment_method_createview(request):
         billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
         if not billing_profile:
             return HttpResponse({"message": "Cannot find this user."}, status_code=401)
+        token = request.POST.get("token")
+        if token is not None:
+            customer = stripe.Customer.retrieve(billing_profile.customer_id)
+            card_response = customer.sources.create(source=token)
+            print(card_response)
         return JsonResponse({"message": "Your card was successfully added."})
     return HttpResponse("error", status_code=401)
