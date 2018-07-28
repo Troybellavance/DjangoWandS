@@ -7,7 +7,7 @@ import stripe
 stripe.api_key = "sk_test_lhe3uvwYErAh2ECdCfg6YD3C"
 STRIPE_PUBLIC_KEY = 'pk_test_E06fqQ0w0Yh0gNtiUmRjPg9o'
 
-from .models import BillingProfile
+from .models import BillingProfile, CreditCard
 
 
 def payment_method_view(request):
@@ -33,6 +33,7 @@ def payment_method_createview(request):
         if token is not None:
             customer = stripe.Customer.retrieve(billing_profile.customer_id)
             card_response = customer.sources.create(source=token)
-            print(card_response)
+            new_card_obj = CreditCard.objects.add_new(billing_profile, card_response)
+            print(new_card_obj)
         return JsonResponse({"message": "Your card was successfully added."})
     return HttpResponse("error", status_code=401)
