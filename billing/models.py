@@ -38,6 +38,10 @@ class BillingProfile(models.Model):
     def __str__(self):
         return self.email
 
+    def billing_charge(self, order_obj, card=None):
+        return ChargeOrder.objects.create_charge(self, order_obj, card)
+
+
 #Makes sure the customer doesn't have an ID already and that they have an email. No email means no stripe customer_id. Can generate new ids easily with pre_save.
 def billing_profile_created_receiver(sender, instance, *args, **kwargs):
     if not instance.customer_id and instance.email:
@@ -60,9 +64,9 @@ post_save.connect(user_created_receiver, sender=User)
 #Can just be done through stripe, but putting the information in the backend to reduce api calls.
 
 class CardManager(models.Manager):
-    def add_new(self, billing_profile, stripe_card_response):
+    def add_new_stripe(self, billing_profile, stripe_card_response):
         if str(stripe_card_response.object) == "card":
-            new_card = self.model(
+            new_stripe_card = self.model(
                     billing_profile=billing_profile,
                     stripe_id = stripe_card_response.id,
                     brand = stripe_card_response.brand,
@@ -71,8 +75,8 @@ class CardManager(models.Manager):
                     exp_year = stripe_card_response.exp_year,
                     last4 = stripe_card_response.last4
                 )
-            new_card.save()
-            return new_card
+            new_stripe_card.save()
+            return new_stripe_card
         return None
 
 
@@ -102,8 +106,8 @@ def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
 post_save.connect(new_card_post_save_receiver, sender=CreditCard)
 
 class ChargeManager(models.Manager):
-    def create(self, billing_profile, order_obj, creditcard=None):
-        card_obj = creditcard
+    def create_charge(self, billing_profile, order_obj, card=None):
+        card_obj = card
         if card_obj is None:
             cards = billing_profile.card_set.filter(default=True)
             if cards.exists():
