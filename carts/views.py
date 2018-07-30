@@ -83,12 +83,17 @@ def checkout_home(request):
             order_obj.save()
 
     if request.method == "POST":
-        is_done = order_obj.check_order_done()
-        if is_done:
-            order_obj.mark_as_paid()
-            request.session['cart_items'] = 0
-            del request.session['cart_id']
-            return redirect("cart:success")
+        is_ready = order_obj.check_order_done()
+        if is_ready:
+            did_charge, charge_msg = billing_profile.billing_charge(order_obj)
+            if did_charge:
+                order_obj.mark_as_paid()
+                request.session['cart_items'] = 0
+                del request.session['cart_id']
+                return redirect("cart:success")
+            else:
+                print(crg_msg)
+                return redirect("cart:checkout")
     context = {
         "object": order_obj,
         "billing_profile": billing_profile,
