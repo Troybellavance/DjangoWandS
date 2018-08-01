@@ -54,6 +54,8 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'accounts.CustomUser' #Swap from built-in model to custom model for the user.
 
 FORCE_INACTIVE_USER_ENDSESSION= False
+STRIPE_SECRET_KEY = "sk_test_niKU6xKa1ICCmh61JOLqkqft"
+STRIPE_PUBLIC_KEY = 'pk_test_t0959FwEVWMRzwKLOrwPJeqI'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
