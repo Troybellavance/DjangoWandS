@@ -6,7 +6,7 @@ from accounts.models import GuestEmail
 User = settings.AUTH_USER_MODEL
 
 import stripe
-stripe.api_key = "sk_test_lhe3uvwYErAh2ECdCfg6YD3C"
+stripe.api_key = "sk_test_niKU6xKa1ICCmh61JOLqkqft"
 
 #Checks for user/guest status and saves payment information or reloads it for the guest user
 class BillingProfileManager(models.Manager):
@@ -47,9 +47,15 @@ class BillingProfile(models.Model):
 
     @property
     def has_card(self):
-        instance = self
-        creditcard_qs = instance.creditcard_set.all()
+        creditcard_qs = self.get_cards()
         return creditcard_qs.exists()
+
+    @property
+    def default_card(self):
+        creditcards = self.get_cards().filter(default=True)
+        if creditcards.exists():
+            return creditcards.first()
+        return None
 
 #Makes sure the customer doesn't have an ID already and that they have an email. No email means no stripe customer_id. Can generate new ids easily with pre_save.
 def billing_profile_created_receiver(sender, instance, *args, **kwargs):
