@@ -43,7 +43,7 @@ class BillingProfile(models.Model):
         return ChargeOrder.objects.create_charge(self, order_obj, card)
 
     def get_cards(self):
-        return self.card_set.all()
+        return self.creditcard_set.all()
 
     @property
     def has_card(self):
