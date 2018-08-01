@@ -31,7 +31,8 @@ class BillingProfile(models.Model):
     active      = models.BooleanField(default=True)
     update      = models.DateTimeField(auto_now=True)
     timestamp   = models.DateTimeField(auto_now_add=True)
-    customer_id = models.CharField(max_length=100, null=True, blank=True)
+    customer_id = models.CharField(max_length=120, null=True, blank=True)
+    # customer_id in Stripe or Braintree
 
     objects = BillingProfileManager()
 
@@ -41,6 +42,14 @@ class BillingProfile(models.Model):
     def billing_charge(self, order_obj, card=None):
         return ChargeOrder.objects.create_charge(self, order_obj, card)
 
+    def get_cards(self):
+        return self.card_set.all()
+
+    @property
+    def has_card(self):
+        instance = self
+        creditcard_qs = instance.creditcard_set.all()
+        return creditcard_qs.exists()
 
 #Makes sure the customer doesn't have an ID already and that they have an email. No email means no stripe customer_id. Can generate new ids easily with pre_save.
 def billing_profile_created_receiver(sender, instance, *args, **kwargs):
@@ -64,8 +73,10 @@ post_save.connect(user_created_receiver, sender=User)
 #Can just be done through stripe, but putting the information in the backend to reduce api calls.
 
 class CardManager(models.Manager):
-    def add_new_stripe(self, billing_profile, stripe_card_response):
-        if str(stripe_card_response.object) == "card":
+    def add_new_stripe(self, billing_profile, token):
+        if token:
+            customer = stripe.Customer.retrieve(billing_profile.customer_id)
+            stripe_card_response = customer.sources.create(source=token)
             new_stripe_card = self.model(
                     billing_profile=billing_profile,
                     stripe_id = stripe_card_response.id,
@@ -76,6 +87,7 @@ class CardManager(models.Manager):
                     last4 = stripe_card_response.last4
                 )
             new_stripe_card.save()
+            print(new_stripe_card)
             return new_stripe_card
         return None
 
@@ -97,24 +109,25 @@ class CreditCard(models.Model):
     def __str__(self):
         return "{} {}".format(self.brand, self.last4)
 
-def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
-    if instance.default:
-        billing_profile = instance.billing_profile
-        qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
-        qs.update(default=False)
-
-post_save.connect(new_card_post_save_receiver, sender=CreditCard)
+# def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
+#     if instance.default:
+#         billing_profile = instance.billing_profile
+#         qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
+#         qs.update(default=False)
+#
+# post_save.connect(new_card_post_save_receiver, sender=CreditCard)
 
 class ChargeManager(models.Manager):
-    def create_charge(self, billing_profile, order_obj, card=None):
+    def create_charge(self, billing_profile, order_obj, card=None): # Charge.objects.do()
         card_obj = card
         if card_obj is None:
-            cards = billing_profile.card_set.filter(default=True)
+            cards = billing_profile.creditcard_set.filter(default=True) # card_obj.billing_profile
             if cards.exists():
                 card_obj = cards.first()
         if card_obj is None:
-            return False, "No cards listed"
-        charge = stripe.ChargeOrder.create(
+            return False, "No cards available"
+
+        charge = stripe.Charge.create(
               amount = int(order_obj.total * 100),
               currency = "usd",
               customer =  billing_profile.customer_id,
@@ -122,18 +135,17 @@ class ChargeManager(models.Manager):
               metadata={"order_id":order_obj.order_id},
             )
         new_charge_obj = self.model(
-              billing_profile = billing_profile,
-              stripe_id = charge.id,
-              paid = charge.paid,
-              refunded = charge.refunded,
-              outcome = charge.outcome,
-              outcome_type = charge.outcome['type'],
-              seller_message = charge.outcome.get('seller_message'),
-              risk_level = charge.outcome.get('risk_level'),
+                billing_profile = billing_profile,
+                stripe_id = charge.id,
+                paid = charge.paid,
+                refunded = charge.refunded,
+                outcome = charge.outcome,
+                outcome_type = charge.outcome['type'],
+                seller_message = charge.outcome.get('seller_message'),
+                risk_level = charge.outcome.get('risk_level'),
         )
         new_charge_obj.save()
         return new_charge_obj.paid, new_charge_obj.seller_message
-
 
 class ChargeOrder(models.Model):
     billing_profile         = models.ForeignKey(BillingProfile)
@@ -145,4 +157,4 @@ class ChargeOrder(models.Model):
     seller_message          = models.CharField(max_length=160, null=True, blank=True)
     risk_level              = models.CharField(max_length=100, null=True, blank=True)
 
-objects = ChargeManager()
+    objects = ChargeManager()
