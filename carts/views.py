@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -10,6 +11,11 @@ from billing.models import BillingProfile
 from wandsproducts.models import Product
 from orders.models import Order
 from .models import Cart
+
+import stripe
+STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_niKU6xKa1ICCmh61JOLqkqft")
+STRIPE_PUBLIC_KEY = getattr(settings, "STRIPE_PUBLIC_KEY", "pk_test_t0959FwEVWMRzwKLOrwPJeqI")
+stripe.api_key = STRIPE_SECRET_KEY
 
 def cart_detail_view_api(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
@@ -66,6 +72,7 @@ def checkout_home(request):
     guest_form = GuestForm()
     address_form = AddressForm()
     address_qs = None
+    has_card = None
     billing_address_id = request.session.get("billing_address_id", None)
     shipping_address_id = request.session.get("shipping_address_id", None)
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
@@ -81,6 +88,7 @@ def checkout_home(request):
             del request.session["billing_address_id"]
         if billing_address_id or shipping_address_id:
             order_obj.save()
+        has_card = billing_profile.has_card
 
     if request.method == "POST":
         is_ready = order_obj.check_order_done()
@@ -92,7 +100,7 @@ def checkout_home(request):
                 del request.session['cart_id']
                 return redirect("cart:success")
             else:
-                print(crg_msg)
+                print(charge_msg)
                 return redirect("cart:checkout")
     context = {
         "object": order_obj,
@@ -101,6 +109,8 @@ def checkout_home(request):
         "guest_form": guest_form,
         "address_form": address_form,
         "address_qs": address_qs,
+        "has_card": has_card,
+        "publish_key": STRIPE_PUBLIC_KEY,
     }
     return render(request, "carts/checkout.html", context)
 
