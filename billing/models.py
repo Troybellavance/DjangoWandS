@@ -57,6 +57,11 @@ class BillingProfile(models.Model):
             return creditcards.first()
         return None
 
+    def set_cards_inactive(self):
+        cards_qs = self.get_cards()
+        cards_qs.update(active=False)
+        return cards_qs.filter(active=True).count()
+
 #Makes sure the customer doesn't have an ID already and that they have an email. No email means no stripe customer_id. Can generate new ids easily with pre_save.
 def billing_profile_created_receiver(sender, instance, *args, **kwargs):
     if not instance.customer_id and instance.email:
@@ -79,6 +84,9 @@ post_save.connect(user_created_receiver, sender=User)
 #Can just be done through stripe, but putting the information in the backend to reduce api calls.
 
 class CardManager(models.Manager):
+    def all(self, *args, **kwargs):
+        return self.get_queryset().filter(active=True)
+
     def add_new_stripe(self, billing_profile, token):
         if token:
             customer = stripe.Customer.retrieve(billing_profile.customer_id)
