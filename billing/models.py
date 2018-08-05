@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from accounts.models import GuestEmail
@@ -45,6 +46,9 @@ class BillingProfile(models.Model):
     def get_cards(self):
         return self.creditcard_set.all()
 
+    def get_payment_method_url(self):
+        return reverse('billing-payment-method')
+
     @property
     def has_card(self):
         creditcard_qs = self.get_cards()
@@ -52,7 +56,7 @@ class BillingProfile(models.Model):
 
     @property
     def default_card(self):
-        creditcards = self.get_cards().filter(default=True)
+        creditcards = self.get_cards().filter(active=True, default=True)
         if creditcards.exists():
             return creditcards.first()
         return None
@@ -123,13 +127,13 @@ class CreditCard(models.Model):
     def __str__(self):
         return "{} {}".format(self.brand, self.last4)
 
-# def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
-#     if instance.default:
-#         billing_profile = instance.billing_profile
-#         qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
-#         qs.update(default=False)
-#
-# post_save.connect(new_card_post_save_receiver, sender=CreditCard)
+def new_card_post_save_receiver(sender, instance, created, *args, **kwargs):
+    if instance.default:
+        billing_profile = instance.billing_profile
+        qs = CreditCard.objects.filter(billing_profile=billing_profile).exclude(pk=instance.pk)
+        qs.update(default=False)
+
+post_save.connect(new_card_post_save_receiver, sender=CreditCard)
 
 class ChargeManager(models.Manager):
     def create_charge(self, billing_profile, order_obj, card=None): # Charge.objects.do()
