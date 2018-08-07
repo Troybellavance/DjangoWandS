@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'analytics',
     'billing',
     'carts',
+    'emailing',
     'orders',
     'search',
     'tags',
@@ -59,7 +60,7 @@ STRIPE_PUBLIC_KEY = 'pk_test_t0959FwEVWMRzwKLOrwPJeqI'
 
 MAILCHIMP_API_KEY = "35dc84379d5c9f4b725add73715129e5-us19"
 MAILCHIMP_DATA_CENTER = "us19"
-MAILCHIMP_EMAIL_LIST_ID = "0f370c1b2d" 
+MAILCHIMP_EMAIL_LIST_ID = "0f370c1b2d"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
