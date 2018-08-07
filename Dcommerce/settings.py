@@ -57,6 +57,10 @@ FORCE_INACTIVE_USER_ENDSESSION= False
 STRIPE_SECRET_KEY = "sk_test_niKU6xKa1ICCmh61JOLqkqft"
 STRIPE_PUBLIC_KEY = 'pk_test_t0959FwEVWMRzwKLOrwPJeqI'
 
+MAILCHIMP_API_KEY = "35dc84379d5c9f4b725add73715129e5-us19"
+MAILCHIMP_DATA_CENTER = "us19"
+MAILCHIMP_EMAIL_LIST_ID = "0f370c1b2d" 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
