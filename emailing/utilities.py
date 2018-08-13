@@ -18,7 +18,7 @@ class Mailchimp_emailing(object):
         )
         self.list_id = MAILCHIMP_EMAIL_LIST_ID
         self.list_endpoint = '{api_url}/lists/{list_id}'.format(
-                               api_url = self.api_url
+                               api_url = self.api_url,
                                list_id=self.list_id
         )
 
@@ -29,7 +29,7 @@ class Mailchimp_emailing(object):
 
     def valid_status_check(self, status):
         options = ['subscribed','unsubscribed','cleaned','pending']
-        if status not in choices:
+        if status not in options:
             raise ValueError("Not a valid status for emails")
         return status
 
