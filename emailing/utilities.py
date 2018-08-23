@@ -1,4 +1,6 @@
+import hashlib
 import json
+import re
 import requests
 from django.conf import settings
 
@@ -9,6 +11,11 @@ MAILCHIMP_EMAIL_LIST_ID = getattr(settings, "MAILCHIMP_EMAIL_LIST_ID", None)
 
 
 
+def subscriber_hash(member_email):
+    member_email = member_email.lower().encode()
+    mail = hashlib.md5(member_email)
+    return mail.hexdigest()
+
 class MailchimpEmailing(object):
     def __init__(self):
         super(MailchimpEmailing, self).__init__()
@@ -17,8 +24,12 @@ class MailchimpEmailing(object):
         self.list_id = MAILCHIMP_EMAIL_LIST_ID
         self.list_endpoint = '{api_url}/lists/{list_id}'.format(api_url=self.api_url, list_id=self.list_id)
 
+    def get_members_endpoint(self):
+        return self.list_endpoint + "/members"
+
     def check_if_subscribed(self, email):
-        endpoint = self.api_url
+        hashed_email = subscriber_hash(email)
+        endpoint = self.get_members_endpoint + "/" + hashed_email
         req = requests.get(endpoint, auth=("", self.key))
         return req.json()
 
@@ -35,6 +46,6 @@ class MailchimpEmailing(object):
              "email_address": email,
              "status": status
         }
-        endpoint = self.list_endpoint + "/members"
+        endpoint = self.get_members_endpoint()
         req = requests.post(endpoint, auth=("", self.key), data=json.dumps(data))
         return req.json()
