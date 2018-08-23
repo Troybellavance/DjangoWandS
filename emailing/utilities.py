@@ -9,7 +9,10 @@ MAILCHIMP_API_KEY = getattr(settings, "MAILCHIMP_API_KEY", None)
 MAILCHIMP_DATA_CENTER = getattr(settings, "MAILCHIMP_DATA_CENTER", None)
 MAILCHIMP_EMAIL_LIST_ID = getattr(settings, "MAILCHIMP_EMAIL_LIST_ID", None)
 
-
+def check_email_format(email):
+    if not re.match(r".+@.+\..+", email):
+        raise ValueError("String is not a valid email address")
+    return email
 
 def subscriber_hash(member_email):
     member_email = member_email.lower().encode()
@@ -27,7 +30,13 @@ class MailchimpEmailing(object):
     def get_members_endpoint(self):
         return self.list_endpoint + "/members"
 
-    def check_if_subscribed(self, email):
+    def check_sub_status(self, email):
+        hashed_email = subscriber_hash(email)
+        endpoint = self.get_members_endpoint + "/" + hashed_email
+        req = requests.get(endpoint, auth=("", self.key))
+        return req.json()
+
+    def change_sub_status(self, email):
         hashed_email = subscriber_hash(email)
         endpoint = self.get_members_endpoint + "/" + hashed_email
         req = requests.get(endpoint, auth=("", self.key))
