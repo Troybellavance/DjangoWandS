@@ -15,6 +15,7 @@ def check_email_format(email):
     return email
 
 def subscriber_hash(member_email):
+    check_email_format(member_email)
     member_email = member_email.lower().encode()
     mail = hashlib.md5(member_email)
     return mail.hexdigest()
@@ -32,14 +33,17 @@ class MailchimpEmailing(object):
 
     def check_sub_status(self, email):
         hashed_email = subscriber_hash(email)
-        endpoint = self.get_members_endpoint + "/" + hashed_email
+        endpoint = self.get_members_endpoint() + "/" + hashed_email
         req = requests.get(endpoint, auth=("", self.key))
         return req.json()
 
-    def change_sub_status(self, email):
+    def change_sub_status(self, email, status='unsubscribed'):
         hashed_email = subscriber_hash(email)
-        endpoint = self.get_members_endpoint + "/" + hashed_email
-        req = requests.get(endpoint, auth=("", self.key))
+        endpoint = self.get_members_endpoint() + "/" + hashed_email
+        data = {
+            "status": self.check_validity_status(status)
+        }
+        req = requests.put(endpoint, auth=("", self.key))
         return req.json()
 
     def check_validity_status(self, status):
