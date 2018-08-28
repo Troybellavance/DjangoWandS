@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
+
+from .utilities import MailchimpEmailing
 
 class EmailingPreferences(models.Model):
     user               = models.OneToOneField(settings.AUTH_USER_MODEL)
@@ -12,12 +14,27 @@ class EmailingPreferences(models.Model):
     def __str__(self):
         return self.user.email
 
-def emailing_pref_update_reciever(sender, instance, created, *args, **kwargs):
+def emailing_pref_reciever_create(sender, instance, created, *args, **kwargs):
     if created:
-        pass
-        print("User added to mail.")
+        status_code, response_data = MailchimpEmailing().subscribe_user(instance.user.email)
+        print(status_code, response_data)
 
-post_save.connect(emailing_pref_update_reciever, sender=EmailingPreferences)
+post_save.connect(emailing_pref_reciever_create, sender=EmailingPreferences)
+
+
+def emailing_pref_reciever_update(sender, instance, *args, **kwargs):
+    if instance.subscribed:
+        status_code, response_data = MailchimpEmailing().subscribe_user(instance.user.email)
+
+    else:
+        status_code, response_data = MailchimpEmailing().unsubscribe_user(instance.user.email)
+
+    if response_data['status'] == 'subscribed':
+        instance.subscribed = True
+    else:
+        instance.subscribed = False
+
+pre_save.connect(emailing_pref_reciever_update, sender=EmailingPreferences)
 
 
 def make_emailing_pref_reciever(sender, instance, created, *args, **kwargs):
