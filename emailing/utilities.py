@@ -43,7 +43,7 @@ class MailchimpEmailing(object):
         data = {
             "status": self.check_validity_status(status)
         }
-        req = requests.put(endpoint, auth=("", self.key))
+        req = requests.put(endpoint, auth=("", self.key), data=json.dumps(data))
         return req.json()
 
     def check_validity_status(self, status):
@@ -62,3 +62,12 @@ class MailchimpEmailing(object):
         endpoint = self.get_members_endpoint()
         req = requests.post(endpoint, auth=("", self.key), data=json.dumps(data))
         return req.json()
+
+    def subscribe_user(self, email):
+        return self.change_sub_status(email, status='subscribed')
+
+    def unsubscribe_user(self, email):
+        return self.change_sub_status(email, status='unsubscribed')
+
+    def pending_user(self, email):
+        return self.change_sub_status(email, status='pending')
