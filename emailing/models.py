@@ -5,11 +5,12 @@ from django.db.models.signals import post_save, pre_save
 from .utilities import MailchimpEmailing
 
 class EmailingPreferences(models.Model):
-    user               = models.OneToOneField(settings.AUTH_USER_MODEL)
-    subscribed         = models.BooleanField(default=True)
-    mailchimp_message  = models.TextField(null=True, blank=True)
-    timestamp          = models.DateTimeField(auto_now_add=True)
-    update             = models.DateTimeField(auto_now=True)
+    user                   = models.OneToOneField(settings.AUTH_USER_MODEL)
+    subscribed             = models.BooleanField(default=True)
+    mailchimp_subscribed   = models.NullBooleanField(blank=True)
+    mailchimp_message      = models.TextField(null=True, blank=True)
+    timestamp              = models.DateTimeField(auto_now_add=True)
+    update                 = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user.email
@@ -23,16 +24,21 @@ post_save.connect(emailing_pref_reciever_create, sender=EmailingPreferences)
 
 
 def emailing_pref_reciever_update(sender, instance, *args, **kwargs):
-    if instance.subscribed:
-        status_code, response_data = MailchimpEmailing().subscribe_user(instance.user.email)
+    if instance.subscribed != instance.mailchimp_subscribed:
+        if instance.subscribed:
+            status_code, response_data = MailchimpEmailing().subscribe_user(instance.user.email)
 
-    else:
-        status_code, response_data = MailchimpEmailing().unsubscribe_user(instance.user.email)
+        else:
+            status_code, response_data = MailchimpEmailing().unsubscribe_user(instance.user.email)
 
-    if response_data['status'] == 'subscribed':
-        instance.subscribed = True
-    else:
-        instance.subscribed = False
+        if response_data['status'] == 'subscribed':
+            instance.subscribed = True
+            instance.mailchimp_subscribed = True
+            instance.mailchimp_message = response_data
+        else:
+            instance.subscribed = False
+            instance.mailchimp_subscribed = False
+            instance.mailchimp_message = response_data
 
 pre_save.connect(emailing_pref_reciever_update, sender=EmailingPreferences)
 
