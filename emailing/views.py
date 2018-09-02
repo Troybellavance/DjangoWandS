@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from django.views.generic import UpdateView
 
-# Create your views here.
+from .forms import EmailingPreferencesForm
+from .models import EmailingPreferences
+
+class EmailingPreferencesUpdateView(UpdateView):

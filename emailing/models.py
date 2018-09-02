@@ -10,7 +10,7 @@ class EmailingPreferences(models.Model):
     mailchimp_subscribed   = models.NullBooleanField(blank=True)
     mailchimp_message      = models.TextField(null=True, blank=True)
     timestamp              = models.DateTimeField(auto_now_add=True)
-    update                 = models.DateTimeField(auto_now=True)
+    updated                 = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user.email

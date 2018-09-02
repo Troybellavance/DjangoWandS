@@ -71,3 +71,5 @@ class MailchimpEmailing(object):
 
     def pending_user(self, email):
         return self.change_sub_status(email, status='pending')
+
+    ##Add guest useraccounts to emailing subscription
