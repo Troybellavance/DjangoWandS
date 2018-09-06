@@ -41,6 +41,7 @@ class MailchimpEmailing(object):
         hashed_email = subscriber_hash(email)
         endpoint = self.get_members_endpoint() + "/" + hashed_email
         data = {
+            "email_address":email,
             "status": self.check_validity_status(status)
         }
         req = requests.put(endpoint, auth=("", self.key), data=json.dumps(data))
@@ -53,15 +54,16 @@ class MailchimpEmailing(object):
         return status
 
     def add_email_subscription(self, email):
-        status = "subscribed"
-        self.check_validity_status(status)
-        data = {
-             "email_address": email,
-             "status": status
-        }
-        endpoint = self.get_members_endpoint()
-        req = requests.post(endpoint, auth=("", self.key), data=json.dumps(data))
-        return req.json()
+        # status = "subscribed"
+        # self.check_validity_status(status)
+        # data = {
+        #      "email_address": email,
+        #      "status": status
+        # }
+        # endpoint = self.get_members_endpoint()
+        # req = requests.post(endpoint, auth=("", self.key), data=json.dumps(data))
+        # return req.json()
+        return self.change_sub_status(email, status='subscribed')
 
     def subscribe_user(self, email):
         return self.change_sub_status(email, status='subscribed')
