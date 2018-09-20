@@ -54,15 +54,7 @@ class MailchimpEmailing(object):
         return status
 
     def add_email_subscription(self, email):
-        # status = "subscribed"
-        # self.check_validity_status(status)
-        # data = {
-        #      "email_address": email,
-        #      "status": status
-        # }
-        # endpoint = self.get_members_endpoint()
-        # req = requests.post(endpoint, auth=("", self.key), data=json.dumps(data))
-        # return req.json()
+
         return self.change_sub_status(email, status='subscribed')
 
     def subscribe_user(self, email):
@@ -73,5 +65,3 @@ class MailchimpEmailing(object):
 
     def pending_user(self, email):
         return self.change_sub_status(email, status='pending')
-
-    ##Add guest useraccounts to emailing subscription

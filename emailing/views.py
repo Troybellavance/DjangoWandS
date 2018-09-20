@@ -29,7 +29,7 @@ class EmailingPreferencesUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_object(self):
         user = self.request.user
-        obj, created = EmailingPreferences.objects.get_or_create(user=user) #getting a ForeignKey would be different
+        obj, created = EmailingPreferences.objects.get_or_create(user=user)
         return obj
 
 
@@ -41,4 +41,8 @@ def mailchimp_hook_view(request):
         hook_type = data.get('type')
         response_status, response = MailchimpEmailing().check_sub_status(email)
         sub_status = response['status']
+        if sub_status == 'subscribed':
+            qs = EmailingPreferences.objects.filter(user__email__iexact=email)
+            if qs.exists():
+                qs.update(subscribed=True, str(data))
     return
