@@ -41,8 +41,18 @@ def mailchimp_hook_view(request):
         hook_type = data.get('type')
         response_status, response = MailchimpEmailing().check_sub_status(email)
         sub_status = response['status']
+        status_subbed = None
+        mailchimp_subbed = None
         if sub_status == 'subscribed':
             qs = EmailingPreferences.objects.filter(user__email__iexact=email)
             if qs.exists():
-                qs.update(subscribed=True, str(data))
+                qs.update(subscribed=True, mailchimp_subscribed=False, str(data))
+        elif sub_status == 'unsubscribed':
+            qs = EmailingPreferences.objects.filter(user__email__iexact=email)
+            if qs.exists():
+                qs.update(subscribed=False, mailchimp_subscribed=False, str(data))
+        if status_subbed and mailchimp_subbed:
+            qs = EmailingPreferences.objects.filter(user__email__iexact=email)
+            if qs.exists():
+                qs.update(subscribed=status_subbed, mailchimp_subscribed=mailchimp_subbed, str(data))
     return
