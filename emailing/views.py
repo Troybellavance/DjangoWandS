@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, View
 
 from .forms import EmailingPreferencesForm
 from .models import EmailingPreferences
@@ -32,27 +32,43 @@ class EmailingPreferencesUpdateView(SuccessMessageMixin, UpdateView):
         obj, created = EmailingPreferences.objects.get_or_create(user=user)
         return obj
 
+class MailchimpHookView(View):
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+        list_id = data.get('data[list_id]')
+        if str(list_id) == str(MAILCHIMP_EMAIL_LIST_ID):
+            email = data.get('data[email]')
+            hook_type = data.get('type')
+            response_status, response = MailchimpEmailing().check_sub_status(email)
+            sub_status = response['status']
+            status_subbed = None
+            mailchimp_subbed = None
+            if sub_status == 'subscribed':
+                status_subbed, mailchimp_subbed = (True, True)
+            elif sub_status == 'unsubscribed':
+                status_subbed, mailchimp_subbed = (False, False)
+            if status_subbed is not None and mailchimp_subbed is not None:
+                qs = EmailingPreferences.objects.filter(user__email__iexact=email)
+                if qs.exists():
+                    qs.update(subscribed=status_subbed, mailchimp_subscribed=mailchimp_subbed, mailchimp_message=str(data))
+        return HttpResponse("Thanks!", status=200)
 
-def mailchimp_hook_view(request):
-    data = request.POST
-    list_id = data.get('data[list_id]')
-    if str(list_id) == str(MAILCHIMP_EMAIL_LIST_ID):
-        email = data.get('data[email]')
-        hook_type = data.get('type')
-        response_status, response = MailchimpEmailing().check_sub_status(email)
-        sub_status = response['status']
-        status_subbed = None
-        mailchimp_subbed = None
-        if sub_status == 'subscribed':
-            qs = EmailingPreferences.objects.filter(user__email__iexact=email)
-            if qs.exists():
-                qs.update(subscribed=True, mailchimp_subscribed=False, str(data))
-        elif sub_status == 'unsubscribed':
-            qs = EmailingPreferences.objects.filter(user__email__iexact=email)
-            if qs.exists():
-                qs.update(subscribed=False, mailchimp_subscribed=False, str(data))
-        if status_subbed and mailchimp_subbed:
-            qs = EmailingPreferences.objects.filter(user__email__iexact=email)
-            if qs.exists():
-                qs.update(subscribed=status_subbed, mailchimp_subscribed=mailchimp_subbed, str(data))
-    return
+# def mailchimp_hook_view(request):
+#     data = request.POST
+#     list_id = data.get('data[list_id]')
+#     if str(list_id) == str(MAILCHIMP_EMAIL_LIST_ID):
+#         email = data.get('data[email]')
+#         hook_type = data.get('type')
+#         response_status, response = MailchimpEmailing().check_sub_status(email)
+#         sub_status = response['status']
+#         status_subbed = None
+#         mailchimp_subbed = None
+#         if sub_status == 'subscribed':
+#             status_subbed, mailchimp_subbed = (True, True)
+#         elif sub_status == 'unsubscribed':
+#             status_subbed, mailchimp_subbed = (False, False)
+#         if status_subbed is not None and mailchimp_subbed is not None:
+#             qs = EmailingPreferences.objects.filter(user__email__iexact=email)
+#             if qs.exists():
+#                 qs.update(subscribed=status_subbed, mailchimp_subscribed=mailchimp_subbed, mailchimp_message=str(data))
+#     return HttpResponse("Thanks!", status=200)
