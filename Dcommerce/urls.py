@@ -25,7 +25,7 @@ from accounts.views import LoginView, RegistrationView, guest_registration_view
 from addresses.views import checkout_address_create_view, checkout_address_reuse_view
 from billing.views import payment_method_view, payment_method_createview
 from carts.views import cart_detail_view_api
-from emailing.views import EmailingPreferencesUpdateView
+from emailing.views import EmailingPreferencesUpdateView, MailchimpHookView
 from .views import home_page, about_page, contact_page
 
 urlpatterns = [
@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^wandsproducts/', include("wandsproducts.urls", namespace='wandsproducts')),
     url(r'^search/', include("search.urls", namespace='search')),
     url(r'^settings/email/$', EmailingPreferencesUpdateView.as_view(), name='email-pref'),
+    url(r'^webhooks/mailchimp/$', MailchimpHookView.as_view(), name='webhooks-mailchimp'),
     url(r'^admin/', admin.site.urls),
 ]
 
